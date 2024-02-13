@@ -15,8 +15,8 @@
 #         file_content = file_content + infile.read().replace('\n', '')
 
 # %%
-with open('corpus/corpus.txt', 'r') as infile:
-        file_content = infile.read().replace('\n', '')
+with open('corpus/test.txt', 'r') as infile:
+    file_content = infile.read().replace('\n', '')
 
 # %%
 from nltk import sent_tokenize
@@ -100,9 +100,9 @@ def tokenize_sentences(sentences):
 tokenized_sent = tokenize_sentences(training_data)
 
 # %%
-if (__name__ == '__main__'):
-    for l in tokenized_sent['four_grams']:
-        print(l)
+# if (__name__ == '__main__'):
+#     for l in tokenized_sent['four_grams']:
+#         print(l)
 
 # %%
 # from nltk.probability import FreqDist
@@ -169,9 +169,9 @@ def tokenize_words(data):
     
 
 # %%
-if (__name__ == '__main__'):
-    for l in tokenize_words(training_data)['four_grams']:
-        print(l)
+# if (__name__ == '__main__'):
+#     for l in tokenize_words(training_data)['four_grams']:
+#         print(l)
 
 # %%
 # tokenize_words()['uni_grams']
@@ -206,8 +206,10 @@ for four_gram in tokenized_words['four_grams']:
 
 
 # %%
-if (__name__ == '__main__'):
-    for word in freq_four:
-        print(f'{word}: {freq_four[word]}')
+# if (__name__ == '__main__'):
+    # print(tokenize_sentences(sentences)['sentences'])
+    # print(freq_uni.get(('is',), 0))
+    # for word in freq_four:
+    #     print(f'{word}: {freq_four[word]}')
 
 
