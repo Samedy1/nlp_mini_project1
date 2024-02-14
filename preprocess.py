@@ -15,7 +15,7 @@
 #         file_content = file_content + infile.read().replace('\n', '')
 
 # %%
-with open('corpus/corpus.txt', 'r') as infile:
+with open('corpus/corpus.txt', 'r', encoding='utf-8') as infile:
         file_content = infile.read().replace('\n', '')
 
 # %%
