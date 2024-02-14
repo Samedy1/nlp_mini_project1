@@ -3,11 +3,13 @@ from nltk import sent_tokenize, word_tokenize, ngrams
 import re
 import string
 from nltk.probability import FreqDist
+from nltk.corpus import stopwords
+
 
 # %%
 class TextPreprocessor:
     def __init__(self) -> None:
-        with open('corpus/test.txt', 'r') as infile:
+        with open('corpus/corpus.txt', 'r') as infile:
             file_content = infile.read().replace('\n', '')
             
         # split the file content into sentences
@@ -40,22 +42,36 @@ class TextPreprocessor:
                                "]+", flags=re.UNICODE)
         number_bracket_pattern = re.compile(r"\d")
         
+        def get_lower(sentences: list[str]): return [sentence.lower() for sentence in sentences]
+        
         # convert to lower case
-        low_sentences = [sentence.lower() for sentence in sentences]
+        preprocessed_tokens = [sentence.lower() for sentence in sentences]
 
         # remove number bracket
-        cleaned_sentences = [re.sub(number_bracket_pattern, "", sentence) for sentence in low_sentences]
+        preprocessed_tokens = [re.sub(number_bracket_pattern, "", sentence) for sentence in preprocessed_tokens]
 
         # remove emoji
-        no_emoji_sentences = [re.sub(emoji_pattern, "", sentence) for sentence in cleaned_sentences]
+        preprocessed_tokens = [re.sub(emoji_pattern, "", sentence) for sentence in preprocessed_tokens]
 
         # split each sentence into tokens: [['token', ''token'], ['token', 'token'], ...]
-        tokens_2d = [word_tokenize(sentence) for sentence in no_emoji_sentences]
+        proprocessed_tokens = [word_tokenize(sentence) for sentence in preprocessed_tokens]
+        
+        # remove stopwords
+        en_stopwords = stopwords.words('english')
+        no_stopword_tokens = []
+        for tokens_1d in proprocessed_tokens:
+            no_stopword_tokens.append([token for token in tokens_1d if token not in en_stopwords])
+            
+        # remove articles
+        articles = ['the', 'a', 'an']
+        no_article_tokens = []
+        for tokens_1d in no_stopword_tokens:
+            no_article_tokens.append([token for token in tokens_1d if token not in articles])
 
         # remove punctuation
         translator = str.maketrans('', '', string.punctuation)
         no_punc_tokens = []
-        for tokens_1d in tokens_2d:
+        for tokens_1d in no_article_tokens:
             no_punc_tokens.append([token.translate(translator) for token in tokens_1d])
 
         # # remove empty string
@@ -128,3 +144,5 @@ class TextPreprocessor:
     #         if word not in training:
     #             testing[testing.index(word)] = '<UNK>'
     #         i = i + 1
+
+
