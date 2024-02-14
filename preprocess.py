@@ -1,14 +1,12 @@
-# %%
 from nltk import sent_tokenize, word_tokenize, ngrams
 import re
 import string
 from nltk.probability import FreqDist
 from nltk.corpus import stopwords
 
-
-# %%
 class TextPreprocessor:
     def __init__(self) -> None:
+        # ---------- Prepare the data ----------
         with open('corpus/corpus.txt', 'r') as infile:
             file_content = infile.read().replace('\n', '')
             
@@ -31,6 +29,7 @@ class TextPreprocessor:
         self.create_freq_n_gram(self.training_data)
         pass
 
+    # ---------- Clean data, Tokenize data ----------
     def tokenize_words(self, sentences):
         emoji_pattern = re.compile("["
                                u"\U0001F600-\U0001F64F"  # emoticons
@@ -108,8 +107,8 @@ class TextPreprocessor:
             'four_grams': four_grams,
         }
         
+    # ---------- Frequency distribution for each n-gram ----------
     def create_freq_n_gram(self, training_data):
-        # create a frequency distribution for each n-gram
         self.freq_uni = FreqDist()
         self.freq_bi = FreqDist()
         self.freq_tri = FreqDist()
@@ -132,17 +131,3 @@ class TextPreprocessor:
         # count bi-grams
         for four_gram in tokenized_words['four_grams']:
             self.freq_four[four_gram] = self.freq_four[four_gram] + 1
-            
-    # handle unknown word
-    # def find_unknown_word(self, training:list, testing:list):
-    #     training = self.tokenize_words(training)
-    #     for word in training:
-    #         if word not in testing:
-    #             training[training.index(word)] = '<UNK>'
-                
-    #     for word in testing:
-    #         if word not in training:
-    #             testing[testing.index(word)] = '<UNK>'
-    #         i = i + 1
-
-
