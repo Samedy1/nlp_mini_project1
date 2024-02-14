@@ -53,24 +53,18 @@ class TextPreprocessor:
         preprocessed_tokens = [re.sub(emoji_pattern, "", sentence) for sentence in preprocessed_tokens]
 
         # split each sentence into tokens: [['token', ''token'], ['token', 'token'], ...]
-        proprocessed_tokens = [word_tokenize(sentence) for sentence in preprocessed_tokens]
+        preprocessed_tokens = [word_tokenize(sentence) for sentence in preprocessed_tokens]
         
         # remove stopwords
-        en_stopwords = stopwords.words('english')
-        no_stopword_tokens = []
-        for tokens_1d in proprocessed_tokens:
-            no_stopword_tokens.append([token for token in tokens_1d if token not in en_stopwords])
-            
-        # remove articles
-        articles = ['the', 'a', 'an']
-        no_article_tokens = []
-        for tokens_1d in no_stopword_tokens:
-            no_article_tokens.append([token for token in tokens_1d if token not in articles])
+        # en_stopwords = stopwords.words('english')
+        # no_stopword_tokens = []
+        # for tokens_1d in preprocessed_tokens:
+        #     no_stopword_tokens.append([token for token in tokens_1d if token not in en_stopwords])
 
         # remove punctuation
         translator = str.maketrans('', '', string.punctuation)
         no_punc_tokens = []
-        for tokens_1d in no_article_tokens:
+        for tokens_1d in preprocessed_tokens:
             no_punc_tokens.append([token.translate(translator) for token in tokens_1d])
 
         # # remove empty string
