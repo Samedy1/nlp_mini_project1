@@ -25,12 +25,33 @@ class TextPreprocessor:
         self.test_data = self.sentences[self.training_size + self.validation_size:]
         
         # ---------- Call necessary methods ----------
-        # self.find_unknown_word(self.tokenize_words(self.test_data))
-        self.create_freq_n_gram(self.training_data)
-        pass
+        self.create_training_freq_n_gram(self.training_data)
 
     # ---------- Clean data, Tokenize data ----------
     def tokenize_words(self, sentences):
+        tokens = self.clean(sentences)
+        
+        # create n-grams
+        uni_grams = []
+        bi_grams = []
+        tri_grams = []
+        four_grams = []
+
+        uni_grams.extend(list(ngrams(tokens, n=1)))
+        bi_grams.extend(list(ngrams(tokens, n=2)))
+        tri_grams.extend(list(ngrams(tokens, n=3)))
+        four_grams.extend(list(ngrams(tokens, n=4)))
+
+        return {
+            'sentences': tokens,
+            'uni_grams': uni_grams,
+            'bi_grams': bi_grams,
+            'tri_grams': tri_grams,
+            'four_grams': four_grams,
+        }
+        
+    # ---------- Clean data ----------
+    def clean(self, sentences:list):
         emoji_pattern = re.compile("["
                                u"\U0001F600-\U0001F64F"  # emoticons
                                u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -40,8 +61,6 @@ class TextPreprocessor:
                                u"\U000024C2-\U0001F251"
                                "]+", flags=re.UNICODE)
         number_bracket_pattern = re.compile(r"\d")
-        
-        def get_lower(sentences: list[str]): return [sentence.lower() for sentence in sentences]
         
         # convert to lower case
         preprocessed_tokens = [sentence.lower() for sentence in sentences]
@@ -67,7 +86,7 @@ class TextPreprocessor:
         for tokens_1d in preprocessed_tokens:
             no_punc_tokens.append([token.translate(translator) for token in tokens_1d])
 
-        # # remove empty string
+        # remove empty string
         no_empty_tokens = []
         for token_1d in no_punc_tokens:
             no_empty_tokens.append([token for token in token_1d if token != ''])
@@ -81,33 +100,11 @@ class TextPreprocessor:
             # add words in each sentence into tokens
             tokens.extend(sentence)
             tokens.append('</s>')
-
-        # create n-grams
-        uni_grams = []
-        bi_grams = []
-        tri_grams = []
-        four_grams = []
-
-        uni_grams.extend(list(ngrams(tokens, n=1)))
-        bi_grams.extend(list(ngrams(tokens, n=2)))
-        tri_grams.extend(list(ngrams(tokens, n=3)))
-        four_grams.extend(list(ngrams(tokens, n=4)))
-
-        self.uni_grams = uni_grams
-        self.bi_grams = bi_grams
-        self.tri_grams = tri_grams
-        self.four_grams = four_grams
-
-        return {
-            'sentences': tokens,
-            'uni_grams': uni_grams,
-            'bi_grams': bi_grams,
-            'tri_grams': tri_grams,
-            'four_grams': four_grams,
-        }
+        
+        return tokens
         
     # ---------- Frequency distribution for each n-gram ----------
-    def create_freq_n_gram(self, training_data):
+    def create_training_freq_n_gram(self, training_data):
         self.freq_uni = FreqDist()
         self.freq_bi = FreqDist()
         self.freq_tri = FreqDist()
@@ -130,3 +127,7 @@ class TextPreprocessor:
         # count bi-grams
         for four_gram in tokenized_words['four_grams']:
             self.freq_four[four_gram] = self.freq_four[four_gram] + 1
+            
+    # ---------- Find the unknown words ----------
+    def replace_unknown(self, tokens_replaced: list, second_tokens: list):
+        return [token if token in second_tokens else '<UNK>' for token in tokens_replaced]
