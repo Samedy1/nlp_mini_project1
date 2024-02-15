@@ -7,7 +7,7 @@ from nltk.corpus import stopwords
 class TextPreprocessor:
     def __init__(self) -> None:
         # ---------- Prepare the data ----------
-        with open('corpus/corpus.txt', 'r') as infile:
+        with open('corpus/corpus.txt', 'r', encoding='utf-8') as infile:
             file_content = infile.read().replace('\n', '')
             
         # split the file content into sentences
@@ -92,6 +92,11 @@ class TextPreprocessor:
         bi_grams.extend(list(ngrams(tokens, n=2)))
         tri_grams.extend(list(ngrams(tokens, n=3)))
         four_grams.extend(list(ngrams(tokens, n=4)))
+
+        self.uni_grams = uni_grams
+        self.bi_grams = bi_grams
+        self.tri_grams = tri_grams
+        self.four_grams = four_grams
 
         return {
             'sentences': tokens,
