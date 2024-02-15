@@ -2,7 +2,6 @@ from nltk import sent_tokenize, word_tokenize, ngrams
 import re
 import string
 from nltk.probability import FreqDist
-from nltk.corpus import stopwords
 
 class TextPreprocessor:
     def __init__(self) -> None:
@@ -27,7 +26,7 @@ class TextPreprocessor:
         # ---------- Call necessary methods ----------
         self.create_training_freq_n_gram(self.training_data)
 
-    # ---------- Clean data, Tokenize data ----------
+    # ---------- Clean data, Tokenize data, Create frequency of n-gram ----------
     def tokenize_words(self, sentences):
         tokens = self.clean(sentences)
         
@@ -73,12 +72,6 @@ class TextPreprocessor:
 
         # split each sentence into tokens: [['token', ''token'], ['token', 'token'], ...]
         preprocessed_tokens = [word_tokenize(sentence) for sentence in preprocessed_tokens]
-        
-        # remove stopwords
-        # en_stopwords = stopwords.words('english')
-        # no_stopword_tokens = []
-        # for tokens_1d in preprocessed_tokens:
-        #     no_stopword_tokens.append([token for token in tokens_1d if token not in en_stopwords])
 
         # remove punctuation
         translator = str.maketrans('', '', string.punctuation)
@@ -127,7 +120,3 @@ class TextPreprocessor:
         # count bi-grams
         for four_gram in tokenized_words['four_grams']:
             self.freq_four[four_gram] = self.freq_four[four_gram] + 1
-            
-    # ---------- Find the unknown words ----------
-    def replace_unknown(self, tokens_replaced: list, second_tokens: list):
-        return [token if token in second_tokens else '<UNK>' for token in tokens_replaced]
